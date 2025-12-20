@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PlaygroundRouteImport } from './routes/playground'
 import { Route as ButtonCvaRouteImport } from './routes/button-cva'
 import { Route as ButtonCnRouteImport } from './routes/button-cn'
 import { Route as IndexRouteImport } from './routes/index'
 
+const PlaygroundRoute = PlaygroundRouteImport.update({
+  id: '/playground',
+  path: '/playground',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ButtonCvaRoute = ButtonCvaRouteImport.update({
   id: '/button-cva',
   path: '/button-cva',
@@ -33,34 +39,45 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/button-cn': typeof ButtonCnRoute
   '/button-cva': typeof ButtonCvaRoute
+  '/playground': typeof PlaygroundRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/button-cn': typeof ButtonCnRoute
   '/button-cva': typeof ButtonCvaRoute
+  '/playground': typeof PlaygroundRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/button-cn': typeof ButtonCnRoute
   '/button-cva': typeof ButtonCvaRoute
+  '/playground': typeof PlaygroundRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/button-cn' | '/button-cva'
+  fullPaths: '/' | '/button-cn' | '/button-cva' | '/playground'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/button-cn' | '/button-cva'
-  id: '__root__' | '/' | '/button-cn' | '/button-cva'
+  to: '/' | '/button-cn' | '/button-cva' | '/playground'
+  id: '__root__' | '/' | '/button-cn' | '/button-cva' | '/playground'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ButtonCnRoute: typeof ButtonCnRoute
   ButtonCvaRoute: typeof ButtonCvaRoute
+  PlaygroundRoute: typeof PlaygroundRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/playground': {
+      id: '/playground'
+      path: '/playground'
+      fullPath: '/playground'
+      preLoaderRoute: typeof PlaygroundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/button-cva': {
       id: '/button-cva'
       path: '/button-cva'
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ButtonCnRoute: ButtonCnRoute,
   ButtonCvaRoute: ButtonCvaRoute,
+  PlaygroundRoute: PlaygroundRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

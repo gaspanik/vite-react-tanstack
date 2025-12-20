@@ -12,6 +12,12 @@ const RootLayout = () => (
         Tanstack Router Home
       </Link>{' '}
       <Link
+        to="/playground"
+        className="[&.active]:font-bold [&.active]:text-blue-600"
+      >
+        Playground
+      </Link>
+      <Link
         to="/button-cn"
         className="[&.active]:font-bold [&.active]:text-blue-600"
       >
