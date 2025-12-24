@@ -47,7 +47,7 @@ export const Button = ({
     <button
       // cva関数を実行すると、条件に合ったクラス文字列が返ってくる
       // cva で生成したクラス文字列を、さらに cn でラップして競合を解決するのが鉄則
-      className={cn(buttonVariants({ intent, size, className }))}
+      className={cn(buttonVariants({ intent, size }), className )}
       {...props}
     >
       {children}
