@@ -28,6 +28,12 @@ const RootLayout = () => (
       >
         Button w/ cva
       </Link>
+      <Link
+        to="/card-tv"
+        className="[&.active]:font-bold [&.active]:text-blue-600"
+      >
+        Card w/ tv
+      </Link>
     </div>
     <Outlet />
     <TanStackRouterDevtools position="bottom-right" />

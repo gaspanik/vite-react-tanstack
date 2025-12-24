@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PlaygroundRouteImport } from './routes/playground'
+import { Route as CardTvRouteImport } from './routes/card-tv'
 import { Route as ButtonCvaRouteImport } from './routes/button-cva'
 import { Route as ButtonCnRouteImport } from './routes/button-cn'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const PlaygroundRoute = PlaygroundRouteImport.update({
   id: '/playground',
   path: '/playground',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CardTvRoute = CardTvRouteImport.update({
+  id: '/card-tv',
+  path: '/card-tv',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ButtonCvaRoute = ButtonCvaRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/button-cn': typeof ButtonCnRoute
   '/button-cva': typeof ButtonCvaRoute
+  '/card-tv': typeof CardTvRoute
   '/playground': typeof PlaygroundRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/button-cn': typeof ButtonCnRoute
   '/button-cva': typeof ButtonCvaRoute
+  '/card-tv': typeof CardTvRoute
   '/playground': typeof PlaygroundRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,28 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/button-cn': typeof ButtonCnRoute
   '/button-cva': typeof ButtonCvaRoute
+  '/card-tv': typeof CardTvRoute
   '/playground': typeof PlaygroundRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/button-cn' | '/button-cva' | '/playground'
+  fullPaths: '/' | '/button-cn' | '/button-cva' | '/card-tv' | '/playground'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/button-cn' | '/button-cva' | '/playground'
-  id: '__root__' | '/' | '/button-cn' | '/button-cva' | '/playground'
+  to: '/' | '/button-cn' | '/button-cva' | '/card-tv' | '/playground'
+  id:
+    | '__root__'
+    | '/'
+    | '/button-cn'
+    | '/button-cva'
+    | '/card-tv'
+    | '/playground'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ButtonCnRoute: typeof ButtonCnRoute
   ButtonCvaRoute: typeof ButtonCvaRoute
+  CardTvRoute: typeof CardTvRoute
   PlaygroundRoute: typeof PlaygroundRoute
 }
 
@@ -76,6 +92,13 @@ declare module '@tanstack/react-router' {
       path: '/playground'
       fullPath: '/playground'
       preLoaderRoute: typeof PlaygroundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/card-tv': {
+      id: '/card-tv'
+      path: '/card-tv'
+      fullPath: '/card-tv'
+      preLoaderRoute: typeof CardTvRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/button-cva': {
@@ -106,6 +129,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ButtonCnRoute: ButtonCnRoute,
   ButtonCvaRoute: ButtonCvaRoute,
+  CardTvRoute: CardTvRoute,
   PlaygroundRoute: PlaygroundRoute,
 }
 export const routeTree = rootRouteImport
