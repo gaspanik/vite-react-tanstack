@@ -12,10 +12,10 @@ function Index() {
         <div className="flex items-center gap-2">
           <SquareCode className="w-6 h-6" />
           <h1 className="font-medium text-gray-900 text-xl">
-            Vite: React + Tanstack Router w/ Tailwind v4
+            Vite + React w/ Tanstack Router and Tailwind CSS v4
           </h1>
         </div>
-        <p className="mt-3 mb-1 text-gray-600 text-sm">
+        <p className="mt-2 mb-4 text-gray-600 text-sm">
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
         </p>
         <p className="text-gray-00 text-sm">
@@ -26,6 +26,18 @@ function Index() {
           and{' '}
           <Link to="/button-cva" className="text-blue-600 hover:underline">
             button-cva
+          </Link>
+        </p>
+        <p className="text-gray-00 text-sm">
+          <span className="font-bold">Explore card components w/ tv:</span>{' '}
+          <Link to="/card-tv" className="text-blue-600 hover:underline">
+            card-tv
+          </Link>
+        </p>
+        <p className="text-gray-00 text-sm">
+          <span className="font-bold">Experiment with custom components:</span>{' '}
+          <Link to="/playground" className="text-blue-600 hover:underline">
+            playground
           </Link>
         </p>
       </div>
