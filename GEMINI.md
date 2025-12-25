@@ -14,6 +14,7 @@ This is a **minimal starter template** for building modern web applications. It 
 *   **Utilities:**
     *   `clsx` + `tailwind-merge` (combined as `cn` helper)
     *   `class-variance-authority` (CVA) for component variants
+    *   `tailwind-variants` (for slot-based multi-element styling)
     *   `lucide-react` for icons
 *   **Tooling:** Biome 2.3 (Linter & Formatter), pnpm (Package Manager)
 
@@ -26,14 +27,16 @@ This is a **minimal starter template** for building modern web applications. It 
 ├── src/
 │   ├── components/               # Reusable UI components
 │   │   ├── ButtonCn.tsx          # Simple button using 'cn'
-│   │   └── ButtonCva.tsx         # Variant-based button using 'cva'
+│   │   ├── ButtonCva.tsx         # Variant-based button using 'cva'
+│   │   └── CardTv.tsx            # Slot-based card using 'tailwind-variants'
 │   ├── lib/
 │   │   └── utils.ts              # Utilities (contains 'cn' function)
 │   ├── routes/                   # TanStack Router routes
 │   │   ├── __root.tsx            # Root layout
 │   │   ├── index.tsx             # Home page
 │   │   ├── button-cn.tsx         # ButtonCn demo page
-│   │   └── button-cva.tsx        # ButtonCva demo page
+│   │   ├── button-cva.tsx        # ButtonCva demo page
+│   │   └── card-tv.tsx           # CardTv demo page
 │   ├── index.css                 # Global styles (@import "tailwindcss")
 │   ├── main.tsx                  # Entry point (renders RouterProvider)
 │   ├── routeTree.gen.ts          # Auto-generated route tree
@@ -105,9 +108,10 @@ Always use the `cn` function (from `@/lib/utils`) to merge classes and handle co
 <div className={cn('base-class', isActive && 'active-class', className)} />
 ```
 
-#### Button Patterns
+#### Component Implementation Patterns
 1.  **Simple (`ButtonCn.tsx`):** Use `cn` for simple boolean states (`active`, `disabled`).
-2.  **Variants (`ButtonCva.tsx`):** Use `class-variance-authority` (CVA) for multiple variants (`size`, `intent`).
+2.  **Variants (`ButtonCva.tsx`):** Use `class-variance-authority` (CVA) for multiple variants (`size`, `intent`) on a single element.
+3.  **Slot-Based (`CardTv.tsx`):** Use `tailwind-variants` for multi-element components (e.g., cards, forms) requiring coordinated styling across slots (`base`, `title`, `content`).
 
 ### Accessibility (a11y)
 *   **Navigation:** Use `<nav>` with `aria-label`.

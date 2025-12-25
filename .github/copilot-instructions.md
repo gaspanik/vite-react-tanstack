@@ -9,14 +9,14 @@ Minimal React 19 + TypeScript + Vite 7 + Tailwind CSS 4 starter with pnpm worksp
 - **Framework**: React 19.2 (`react-jsx` transform)
 - **Build**: Vite 7 + `@vitejs/plugin-react` (Fast Refresh enabled)
 - **Styling**: Tailwind CSS 4 (via `@tailwindcss/vite`, applied with `@import "tailwindcss"`)
-- **Utilities**: `clsx` + `tailwind-merge` (combined as `cn` function), `class-variance-authority` (for variant APIs)
+- **Utilities**: `clsx` + `tailwind-merge` (combined as `cn` function), `class-variance-authority` (for variant APIs), `tailwind-variants` (for slot-based multi-element styling)
 - **Linter/Formatter**: Biome 2.3 (strict configuration in `.biome.json`)
 - **Package Manager**: pnpm (`pnpm-workspace.yaml` with `@tailwindcss/oxide`, `esbuild` as build dependencies only)
 
 ## Key Structure
 
 - **Entry**: `index.html` → `src/main.tsx` → TanStack Router (`src/routes/__root.tsx`)
-- **Routes**: `src/routes/` for page components (index, button-cn, button-cva)
+- **Routes**: `src/routes/` for page components (index, button-cn, button-cva, card-tv, playground)
 - **Styles**: `src/index.css` with `@import "tailwindcss"` only (no config file, v4 approach)
 - **Components**: `src/components/` for reusable UI components
 - **Utilities**: `src/lib/utils.ts` with `cn` function (clsx + tailwind-merge)
@@ -162,11 +162,11 @@ import { cn } from '@/lib/utils'
 
 ### Button Component Patterns
 
-Two approaches for building button components:
+Three approaches for building components with variant styles:
 
 **1. Simple Conditional Approach (`ButtonCn.tsx`)**:
 - Use `cn` function for conditional styling
-- Best for simple components with few variations
+- Best for simple components with few variations or single DOM elements
 - Example:
   ```tsx
   import { cn } from '@/lib/utils'
@@ -191,7 +191,7 @@ Two approaches for building button components:
 
 **2. Variant API Approach (`ButtonCva.tsx`)**:
 - Use `class-variance-authority` (CVA) for complex variants
-- Best for components with multiple design system variants
+- Best for single-element components with multiple design system variants
 - Type-safe variant props with `VariantProps<typeof variants>`
 - Example:
   ```tsx
@@ -215,9 +215,78 @@ Two approaches for building button components:
   type ButtonProps = ComponentProps<'button'> & VariantProps<typeof buttonVariants>
 
   export const ButtonCva = ({ intent, size, className, ...props }: ButtonProps) => (
-    <button className={cn(buttonVariants({ intent, size, className }))} {...props} />
+    <button className={cn(buttonVariants({ intent, size }), className )} {...props} />
   )
   ```
+
+**3. Slot-Based Approach (`CardTv.tsx`)**:
+- Use `tailwind-variants` for complex multi-element components
+- Best for components with multiple DOM elements requiring coordinated variant styling
+- Built-in `twMerge` functionality (no need to wrap with `cn`)
+- Type-safe with `VariantProps<typeof config>`
+- Example:
+  ```tsx
+  import { tv, type VariantProps } from 'tailwind-variants'
+  import type { ReactNode } from 'react'
+
+  // Define component variants with slots
+  const card = tv({
+    slots: {
+      base: 'rounded-lg overflow-hidden shadow-md',
+      image: 'w-full h-48 object-cover',
+      content: 'p-6',
+      title: 'text-xl font-bold mb-2',
+      description: 'text-sm mt-2',
+    },
+    variants: {
+      tone: {
+        default: {
+          base: 'bg-white',
+          title: 'text-gray-900',
+          description: 'text-gray-500',
+        },
+        dark: {
+          base: 'bg-slate-900',
+          title: 'text-white',
+          description: 'text-slate-400',
+        },
+      },
+    },
+    defaultVariants: {
+      tone: 'default',
+    },
+  })
+
+  // Extract type-safe props
+  type CardVariants = VariantProps<typeof card>
+
+  interface CardProps extends CardVariants {
+    title: string
+    imageUrl?: string
+    children: ReactNode
+    className?: string
+  }
+
+  // Component implementation
+  export const Card = ({ tone, title, imageUrl, children, className }: CardProps) => {
+    const { base, image, content, title: titleClass, description } = card({ tone })
+    
+    return (
+      <div className={base({ class: className })}>
+        {imageUrl && <img src={imageUrl} alt="Thumbnail" className={image()} />}
+        <div className={content()}>
+          <h3 className={titleClass()}>{title}</h3>
+          <div className={description()}>{children}</div>
+        </div>
+      </div>
+    )
+  }
+  ```
+
+**When to use each approach:**
+- **cn function**: Simple components, few conditionals, single element
+- **CVA**: Single-element components with multiple variant combinations (buttons, badges)
+- **tailwind-variants**: Multi-element components where variants affect multiple child elements (cards, forms, navigation)
 
 ### Icons
 
