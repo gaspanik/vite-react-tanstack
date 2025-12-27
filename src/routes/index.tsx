@@ -12,7 +12,7 @@ function Index() {
         <div className="flex items-center gap-2">
           <SquareCode className="w-6 h-6" />
           <h1 className="font-medium text-gray-900 text-xl">
-            Vite + React w/ Tanstack Router and Tailwind CSS v4
+            React w/ Tanstack Router and Tailwind CSS v4
           </h1>
         </div>
         <p className="mt-2 mb-4 text-gray-600 text-sm">
