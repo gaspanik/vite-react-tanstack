@@ -5,9 +5,9 @@ import { SquareCode } from 'lucide-react'
 
 const RootLayout = () => (
   <>
-    <header>
-      <nav className="top-0 z-10 sticky flex gap-2 bg-white p-2 border-slate-100 border-b font-light text-xs">
-        <SquareCode className="-mr-1 w-4 h-4" />
+    <header className="top-0 z-10 sticky flex gap-2 bg-white p-2 border-slate-100 border-b">
+      <SquareCode className="-mr-1 w-4 h-4" />
+      <nav className="font-light text-xs">
         <ul className="flex sm:flex-row flex-col gap-2">
           <li>
             <Link
