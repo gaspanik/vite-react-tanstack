@@ -7,7 +7,7 @@ export const Route = createFileRoute('/card-tv')({
 
 function CardTv() {
   return (
-    <div className="flex flex-col justify-center items-center bg-white min-h-[95vh]">
+    <div className="flex flex-col justify-center items-center bg-white min-h-[90vh]">
       <div className="flex flex-col items-start gap-1 mx-8 md:max-w-4xl md:text-jusutify text-left">
         <h1 className="font-medium text-gray-900 text-xl">
           Card component w/ tailwind-variants

@@ -7,7 +7,7 @@ export const Route = createFileRoute('/')({
 
 function Index() {
   return (
-    <div className="flex flex-col justify-center items-center bg-white min-h-[95vh]">
+    <div className="flex flex-col justify-center items-center bg-white min-h-[90vh]">
       <div className="flex flex-col items-start gap-1">
         <div className="flex items-center gap-2">
           <SquareCode className="w-6 h-6" />
