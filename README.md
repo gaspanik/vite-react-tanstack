@@ -13,6 +13,7 @@ React 19 + TypeScript + Vite 7 + TanStack Router + Tailwind CSS 4 の最小構�
 - **lucide-react**（アイコンライブラリ）
 - **clsx** + **tailwind-merge**（クラス名結合・競合解決ユーティリティ）
 - **class-variance-authority**（バリアント API 実装ライブラリ）
+- **tailwind-variants**（スロットベースのマルチエレメントスタイリングライブラリ）
 - **pnpm**（ワークスペース対応パッケージマネージャー）
 
 ## プロジェクト構造
@@ -26,14 +27,16 @@ React 19 + TypeScript + Vite 7 + TanStack Router + Tailwind CSS 4 の最小構�
 │   ├── index.css                 # グローバルスタイル（Tailwind インポート）
 │   ├── components/               # 再利用可能な UI コンポーネント
 │   │   ├── ButtonCn.tsx         # cn 関数を使った基本的なボタン
-│   │   └── ButtonCva.tsx        # CVA を使ったバリアント対応ボタン
+│   │   ├── ButtonCva.tsx        # CVA を使ったバリアント対応ボタン
+│   │   └── CardTv.tsx           # tailwind-variants を使ったカード
 │   ├── lib/
 │   │   └── utils.ts              # cn 関数（clsx + tailwind-merge）
 │   └── routes/                   # TanStack Router ルート定義
 │       ├── __root.tsx            # ルートレイアウト
 │       ├── index.tsx             # ホームページ
 │       ├── button-cn.tsx         # ButtonCn サンプルページ
-│       └── button-cva.tsx        # ButtonCva サンプルページ
+│       ├── button-cva.tsx        # ButtonCva サンプルページ
+│       └── card-tv.tsx           # CardTv サンプルページ
 ├── public/                       # 静的アセット
 ├── index.html                    # HTML エントリ
 ├── vite.config.ts                # Vite 設定（パスエイリアス: @ → src/）
@@ -112,9 +115,9 @@ export const Route = createFileRoute('/button-cn')({ component: ButtonCn })
 - **CSS 変数**による `@theme` ディレクティブでのカスタマイズ
 - **Vite プラグイン**統合（PostCSS 不要）
 
-### ボタンコンポーネント
+### コンポーネントサンプル
 
-プロジェクトには2種類のボタンコンポーネントのサンプル実装が含まれています：
+プロジェクトには3つの異なるスタイリングアプローチのサンプル実装が含まれています：
 
 #### ButtonCn（シンプルアプローチ）
 
@@ -146,6 +149,28 @@ import { ButtonCva } from '@/components/ButtonCva'
 
 <ButtonCva intent="primary" size="md">Primary Button</ButtonCva>
 <ButtonCva intent="secondary" size="sm">Secondary Small</ButtonCva>
+```
+
+#### CardTv（スロットベースアプローチ）
+
+`src/components/CardTv.tsx` は `tailwind-variants` を使った高度なマルチエレメント実装例です（使用例: [src/routes/card-tv.tsx](src/routes/card-tv.tsx)）：
+
+- 複数の DOM 要素を持つコンポーネント向けスロット定義
+- 各スロットに対してバリアントごとの異なるスタイルを適用
+- `twMerge` 機能内蔵（`cn` 関数不要）
+- 型安全な props（`VariantProps` で自動生成）
+- `tone`（default/dark/primary）バリアント対応
+- カード、フォーム、ナビゲーションなど複雑なコンポーネントに適した設計
+
+```tsx
+import { Card } from '@/components/CardTv'
+
+<Card tone="default" title="Card Title">
+  Card description text
+</Card>
+<Card tone="dark" title="Dark Card" imageUrl="/image.jpg">
+  Dark themed card with image
+</Card>
 ```
 
 #### cn ユーティリティ関数
