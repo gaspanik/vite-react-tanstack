@@ -1,28 +1,62 @@
-# Copilot Instructions
+# Copilot Instructions for ts-swc
 
 ## Project Overview
 
-Minimal React 19 + TypeScript + Vite 7 + Tailwind CSS 4 starter with pnpm workspace support.
+Minimal React 19 + TypeScript + Vite 7 + Tailwind CSS 4 starter with TanStack Router and pnpm workspace support.
 
 ## Tech Stack
 
 - **Framework**: React 19.2 (`react-jsx` transform)
-- **Build**: Vite 7 + `@vitejs/plugin-react` (Fast Refresh enabled)
+- **Build**: Vite 7 + `@vitejs/plugin-react-swc` (SWC for Fast Refresh)
+- **Router**: TanStack Router (file-based routing with auto-generated route tree)
 - **Styling**: Tailwind CSS 4 (via `@tailwindcss/vite`, applied with `@import "tailwindcss"`)
 - **Utilities**: `clsx` + `tailwind-merge` (combined as `cn` function), `class-variance-authority` (for variant APIs), `tailwind-variants` (for slot-based multi-element styling)
-- **Linter/Formatter**: Biome 2.3 (strict configuration in `.biome.json`)
-- **Package Manager**: pnpm (`pnpm-workspace.yaml` with `@tailwindcss/oxide`, `esbuild` as build dependencies only)
+- **Icons**: `lucide-react` for consistent icon usage
+- **Linter/Formatter**: Biome 2.3 (strict configuration in `biome.json`)
+- **Package Manager**: pnpm (required, see `pnpm-workspace.yaml`)
 
 ## Key Structure
 
 - **Entry**: `index.html` → `src/main.tsx` → TanStack Router (`src/routes/__root.tsx`)
-- **Routes**: `src/routes/` for page components (index, button-cn, button-cva, card-tv, playground)
+- **Routes**: `src/routes/` for page components (auto-generates `src/routeTree.gen.ts`)
 - **Styles**: `src/index.css` with `@import "tailwindcss"` only (no config file, v4 approach)
 - **Components**: `src/components/` for reusable UI components
-- **Utilities**: `src/lib/utils.ts` with `cn` function (clsx + tailwind-merge), `src/lib/image.ts` for eager image loading, `src/lib/imageAsync.ts` for lazy image loading
+- **Utilities**: `src/lib/utils.ts` with `cn` function (clsx + tailwind-merge), `src/lib/image.ts` for optimized image handling
 - **Path Alias**: `@/` maps to `src/` for cleaner imports (configured in both `vite.config.ts` and `tsconfig.app.json`)
 - **TypeScript**: Project references (`tsconfig.json` references `tsconfig.app.json` and `tsconfig.node.json`)
 - **Vite Config**: `vite.config.ts` with `base: './'` (relative path deployment)
+
+## Architecture Overview
+
+This is a React 19 + TypeScript SPA using file-based routing with TanStack Router. The router auto-generates `src/routeTree.gen.ts` from files in `src/routes/` - **never edit this file manually**.
+
+### Key Architectural Decisions
+
+- **SWC over Babel**: Uses `@vitejs/plugin-react-swc` for faster compilation and HMR
+- **Tailwind CSS v4**: Uses `@tailwindcss/vite` plugin (not PostCSS). Import with `@import "tailwindcss"` in CSS files
+- **Biome over ESLint/Prettier**: Single tool for linting and formatting with stricter defaults
+- **pnpm**: Required package manager (see `pnpm-lock.yaml`, not `package-lock.json`)
+
+## Critical Developer Workflows
+
+### Commands
+```bash
+pnpm dev          # Start dev server (do NOT use npm/yarn)
+pnpm build        # TypeScript check + Vite build
+pnpm check        # Biome lint + format (auto-fix)
+```
+
+### Adding Routes
+1. Create files in `src/routes/` following TanStack Router conventions:
+   - `index.tsx` → `/`
+   - `about.tsx` → `/about`
+   - `posts/$postId.tsx` → `/posts/:postId`
+2. Use `createFileRoute()` export pattern (see `src/routes/index.tsx`)
+3. Router auto-regenerates on file changes
+
+### Testing Changes
+- Dev server runs at http://localhost:5173 (not 3000)
+- TanStack Router DevTools available at bottom-right in dev mode
 
 ## Coding Conventions
 
@@ -47,52 +81,74 @@ Minimal React 19 + TypeScript + Vite 7 + Tailwind CSS 4 starter with pnpm worksp
 
 ### TypeScript
 
-- **Strict Mode**: `strict: true`, unused variables/parameters error, `noUncheckedSideEffectImports` enabled
+- **Strict Mode**: `strict: true`, unused variables/parameters error
 - **Module**: `moduleResolution: "bundler"`, `allowImportingTsExtensions: true`
 - **JSX**: `react-jsx` transform (no `import React` needed)
-- **Type Checking**: `erasableSyntaxOnly: true` (limited to type-only syntax)
 - **Path Mapping**: `baseUrl: "./src"` with `@/*` alias for absolute imports from `src/`
 
 ### Biome Rules
 
-- **Format**: 2 spaces, LF, 80 char width, semicolons `asNeeded`, single quotes, trailing commas `all`
+- **Format**: 2 spaces, LF, 80 char width, semicolons as needed, trailing commas
 - **Linter**: `recommended` base + strict TypeScript rules (`noExplicitAny: error`, `noUnusedVariables: error`)
 - **React**: `useExhaustiveDependencies: warn`, `useHookAtTopLevel: error`
-- **CSS**: Tailwind directives parsing enabled
+- Run `pnpm check` before committing. Biome auto-fixes most issues.
 
-## Development Workflow
+## Tailwind CSS v4 Guidelines
 
-```fish
-# Start dev server (HMR enabled)
-pnpm dev
+### Core Principles
 
-# Build (type check → Vite build)
-pnpm build
+- **No Config File Needed**: No `tailwind.config.js`, just `@import "tailwindcss"` in `src/index.css`
+- *Accessibility (a11y)
 
-# Preview build artifacts
-pnpm preview
+### Navigation Structure
 
-# Code quality check (Biome format + lint)
-pnpm check
-```
+- **TanStack Router Link**: Use `Link` component from TanStack Router for navigation:
+  ```tsx
+  import { Link } from '@tanstack/react-router'
+  
+  <nav aria-label="Main navigation">
+    <ul>
+      <li><Link to="/">Home</Link></li>
+      <li><Link to="/about">About</Link></li>
+    </ul>
+  </nav>
+  ```
+- **Active State Styling**: TanStack Router's `Link` automatically applies `.active` class to active links:
+  ```tsx
+  <Link 
+    to="/about"
+    className="[&.active]:font-bold [&.active]:text-blue-600"
+  >
+    About
+  </Link>
+  ```
+- **ARIA Labels**: Provide descriptive `aria-label` to `<nav>` elements (e.g., `"Main navigation"`, `"Footer links"`)
 
-### Mise Tasks (Recommended)
+### Interactive Elements
 
-Tasks defined in `mise.toml` can be run with `mise run <task>`:
+- **Mobile Menu Buttons**: Use proper ARIA attributes:
+  ```tsx
+  <button
+    aria-expanded={isOpen}
+    aria-controls="mobile-menu"
+    aria-label="Toggle menu"
+  >
+    Menu
+  </button>
+  ```
+- **State Indication**: Set `aria-expanded` to `true`/`false` for collapsible sections
+- **Control Relationships**: Use `aria-controls` to link buttons with their target elements
+- **Focus Management**: Ensure keyboard navigation works for all interactive elements
 
-- `vite:dev` / `vite:build` / `vite:preview`
-- `biome:format` / `biome:lint` / `biome:check` (with confirmation prompts)
+### Best Practices
 
-## Dependency Management
+- **Alt Text**: Always provide meaningful `alt` attributes for images
+- **Color Contrast**: Ensure text meets WCAG AA standards (4.5:1 for normal text)
+- **Keyboard Navigation**: All functionality must be accessible via keyboard
+- **Screen Reader Testing**: Test with VoiceOver (macOS) or NVDA/JAWS (Windows)
 
-- **Lock File**: `pnpm-lock.yaml` (pnpm v9+ format)
-- **Updates**: `ncu -i -u` for interactive updates (from history)
-
-## Tailwind CSS v4 Notes
-
-- **No Config Needed**: No `tailwind.config.js`, just `@import "tailwindcss"` in `src/index.css`
+## *Vite Plugin**: `@tailwindcss/vite` required (no PostCSS needed)
 - **Customization**: Use CSS variables or `@theme` directives (not traditional JS config)
-- **Vite Plugin**: `@tailwindcss/vite` required (no PostCSS needed)
 
 ### Theme Management
 
@@ -139,6 +195,14 @@ Tailwind CSS v4 has updated class naming conventions. **Always use v4 syntax**:
 - ✅ State variants: `hover:`, `focus:`, `active:`, `disabled:`, etc.
 
 **Never generate or suggest v3-specific utilities.** When refactoring, convert deprecated utilities to modern flex/grid patterns.
+
+### Styling Guidelines
+
+- **Tailwind-first**: No CSS modules or styled-components
+- **Inline classes**: Keep component styles in `className` props
+- **`cn()` for composition**: Merge and dedupe Tailwind classes (uses `clsx` + `tailwind-merge`)
+- **Icons**: Use `lucide-react` with consistent sizing (`w-4 h-4` for inline, `w-6 h-6` for headings)
+- **Component Overrides**: Accept `className` prop and apply it last in `cn` call
 
 ## Component Patterns
 
@@ -189,7 +253,7 @@ Three approaches for building components with variant styles:
   )
   ```
 
-**2. Variant API Approach (`ButtonCva.tsx`)**:
+**2. Variant API Approach (CVA)**:
 - Use `class-variance-authority` (CVA) for complex variants
 - Best for single-element components with multiple design system variants
 - Type-safe variant props with `VariantProps<typeof variants>`
@@ -219,7 +283,7 @@ Three approaches for building components with variant styles:
   )
   ```
 
-**3. Slot-Based Approach (`CardTv.tsx`)**:
+**3. Slot-Based Approach (Tailwind Variants)**:
 - Use `tailwind-variants` for complex multi-element components
 - Best for components with multiple DOM elements requiring coordinated variant styling
 - Built-in `twMerge` functionality (no need to wrap with `cn`)
@@ -291,16 +355,11 @@ Three approaches for building components with variant styles:
 ### Icons
 
 ```tsx
-// lucide-react icon usage example (see src/routes/__root.tsx, src/routes/button-cn.tsx)
+// lucide-react icon usage example (see src/routes/__root.tsx, src/routes/index.tsx)
 import { IconName } from 'lucide-react'
 
 function Component() {
-  return (
-    <div className="flex items-center gap-2">
-      <IconName className="w-6 h-6" />
-      <h1 className="text-2xl font-bold">Title</h1>
-    </div>
-  )
+  return <IconName className="w-4 h-4" />
 }
 ```
 
@@ -325,17 +384,15 @@ import { getImage } from '@/lib/image'
 
 function Component() {
   return (
-    <>
-      <img 
-        src={getImage('portrait.jpg')}  // With extension
-        alt="Portrait" 
-      />
-      {/* or */}
-      <img 
-        src={getImage('portrait')}      // Auto-detects portrait.jpg
-        alt="Portrait" 
-      />
-    </>
+    <img 
+      src={getImage('portrait.jpg')}  // With extension
+      alt="Portrait" 
+    />
+    // or
+    <img 
+      src={getImage('portrait')}      // Auto-detects portrait.jpg
+      alt="Portrait" 
+    />
   )
 }
 ```
@@ -376,7 +433,7 @@ function ImageGallery() {
   return (
     <div className="grid grid-cols-3 gap-4">
       {Object.entries(images).map(([name, url]) => (
-        <img key={name} src={url} alt={name} className="w-full h-auto" />
+        <img key={name} src={url} alt={name} />
       ))}
     </div>
   )
@@ -401,7 +458,7 @@ function ImageGallery() {
   return (
     <div className="grid grid-cols-3 gap-4">
       {Object.entries(images).map(([name, url]) => (
-        <img key={name} src={url} alt={name} className="w-full h-auto" />
+        <img key={name} src={url} alt={name} />
       ))}
     </div>
   )
@@ -417,106 +474,66 @@ function ImageGallery() {
 - Import sync functions from `@/lib/image`
 - Always provide meaningful `alt` text for accessibility
 
-### Styling Guidelines
-
-- **CSS Classes**: Tailwind utilities preferred
-- **Conditional Classes**: Always use `cn` function to merge classes safely
-- **Component Overrides**: Accept `className` prop and apply it last in `cn` call
-- **Type Safety**: Local CSS like `App.css` can be used alongside (`import './App.css'`)
-
-## Accessibility (a11y)
-
-### Navigation Structure
-
-- **TanStack Router Link**: Use `Link` component from TanStack Router for navigation:
-  ```tsx
-  import { Link } from '@tanstack/react-router'
-  
-  <nav aria-label="Main navigation">
-    <ul>
-      <li><Link to="/">Home</Link></li>
-      <li><Link to="/about">About</Link></li>
-    </ul>
-  </nav>
-  ```
-- **Active State Styling**: TanStack Router's `Link` automatically applies `.active` class to active links:
-  ```tsx
-  <Link 
-    to="/about"
-    className="[&.active]:font-bold [&.active]:text-blue-600"
-  >
-    About
-  </Link>
-  ```
-- **ARIA Labels**: Provide descriptive `aria-label` to `<nav>` elements (e.g., `"Main navigation"`, `"Footer links"`)
-
-### Interactive Elements
-
-- **Mobile Menu Buttons**: Use proper ARIA attributes:
-  ```tsx
-  <button
-    aria-expanded={isOpen}
-    aria-controls="mobile-menu"
-    aria-label="Toggle menu"
-  >
-    Menu
-  </button>
-  ```
-- **State Indication**: Set `aria-expanded` to `true`/`false` for collapsible sections
-- **Control Relationships**: Use `aria-controls` to link buttons with their target elements
-- **Focus Management**: Ensure keyboard navigation works for all interactive elements
-
-### Best Practices
-
-- **Alt Text**: Always provide meaningful `alt` attributes for images
-- **Color Contrast**: Ensure text meets WCAG AA standards (4.5:1 for normal text)
-- **Keyboard Navigation**: All functionality must be accessible via keyboard
-- **Screen Reader Testing**: Test with VoiceOver (macOS) or NVDA/JAWS (Windows)
-
 ## Troubleshooting
 
 - **Biome LSP Errors**: Reload VSCode (`Developer: Reload Window`), verify workspace trust
 - **HMR Stopped**: Restart `pnpm dev`, delete `node_modules/.vite` cache
 - **Type Errors**: Pre-check with `pnpm build` (`tsc -b` → `vite build`)
+- **Router Not Updating**: Ensure `routeTree.gen.ts` is regenerating (check terminal logs)
 
-## MCP Tools Integration
+## When Adding Features
 
-### Tailwind CSS MCP
-
-If Tailwind CSS MCP tools are available in your environment, use them to verify the latest Tailwind CSS v4 specifications before generating code:
-
-**Before writing Tailwind classes:**
-1. Use `mcp_tailwindcss_m_get_tailwind_utilities` to search for utility classes by category, property, or keyword
-2. Use `mcp_tailwindcss_m_search_tailwind_docs` to verify class behavior and find examples
-3. Use `mcp_tailwindcss_m_convert_css_to_tailwind` to convert existing CSS to Tailwind utilities
-
-**For color palette customization:**
-1. Use `mcp_tailwindcss_m_get_tailwind_colors` to reference built-in color scales
-2. Use `mcp_tailwindcss_m_generate_color_palette` to create custom color palettes for the `@theme` block
-
-**For component generation:**
-1. Use `mcp_tailwindcss_m_generate_component_template` to scaffold common UI patterns
-2. Adapt the generated code to follow this project's conventions (cn function, variants, etc.)
-
-**Always prioritize v4 syntax:**
-- Verify that utilities exist in Tailwind CSS v4 before using them
-- When in doubt, check docs via MCP tools rather than relying on v3 knowledge
-- Use MCP tools to stay updated on breaking changes between v3 and v4
-
-**MCP workflow example:**
-```typescript
-// 1. Search for responsive utilities
-mcp_tailwindcss_m_get_tailwind_utilities({ category: "layout", property: "display" })
-
-// 2. Verify gap utilities (no more space-y-*)
-mcp_tailwindcss_m_search_tailwind_docs({ query: "gap utilities flexbox" })
-
-// 3. Convert legacy CSS to v4 utilities
-mcp_tailwindcss_m_convert_css_to_tailwind({ 
-  css: "display: flex; gap: 1rem;",
-  mode: "classes"
-})
-// Returns: "flex gap-4"
+- **New component**: Create in `src/components/`, use `cn()`, export as named export
+- **New route**: Add to `src/routes/`, use `createFileRoute()`, no manual router config needed
+- **New utility**: Add to `src/lib/`, keep pure functions, export as named export
+- **Dependencies**: Run `pnpm add <package>` (not npm install)
+- **Updates**: Use `pnpm update` to upgrade packages
 ```
 
-This ensures all generated code uses the latest Tailwind CSS v4 conventions and avoids deprecated utilities.
+### Path Alias
+
+Use `@/` to import from `src/`:
+```tsx
+import { Button } from '@/components/ButtonCn'
+import { cn } from '@/lib/utils'
+```
+
+## Integration Points
+
+### Router Setup (`src/main.tsx`)
+- Router instance created with `createRouter({ routeTree })`
+- `basepath` uses `import.meta.env.BASE_URL` for deployment flexibility
+- TypeScript module augmentation for router type safety
+
+### Tailwind Configuration
+- **v4 syntax**: No `tailwind.config.js` - use CSS-based config
+- Plugin loads via Vite, not PostCSS
+- Global styles in `src/index.css` (single `@import "tailwindcss"` line)
+
+### Type Safety
+- `tsconfig.json` uses project references (`tsconfig.app.json`, `tsconfig.node.json`)
+- Path mapping: `@/*` → `./src/*` (synced in `vite.config.ts` and `tsconfig.app.json`)
+
+## Tool Versions (Mise)
+
+`mise.toml` defines custom tasks:
+- `mise run vite:dev` → `pnpm dev`
+- `mise run vite:build` → `pnpm build` (with confirmation)
+- `mise run vite:preview` → `pnpm preview`
+
+Use mise commands in environments with mise installed, otherwise use pnpm directly.
+
+## Common Pitfalls
+
+1. **Don't edit `routeTree.gen.ts`** - it's auto-generated by `@tanstack/router-plugin`
+2. **Don't use npm/yarn** - pnpm is required (workspace config in `pnpm-workspace.yaml`)
+3. **Don't create `tailwind.config.js`** - Tailwind v4 uses CSS-based config
+4. **Don't skip `cn()` utility** - direct className concatenation breaks Tailwind precedence
+5. **Biome ignores `routeTree.gen.ts`** - see `biome.json` includes/excludes
+
+## When Adding Features
+
+- **New component**: Create in `src/components/`, use `cn()`, export as named export
+- **New route**: Add to `src/routes/`, use `createFileRoute()`, no manual router config needed
+- **New utility**: Add to `src/lib/`, keep pure functions, export as named export
+- **Dependencies**: Run `pnpm add <package>` (not npm install)

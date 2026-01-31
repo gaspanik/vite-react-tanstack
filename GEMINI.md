@@ -9,7 +9,7 @@ This is a **minimal starter template** for building modern web applications. It 
 *   **Framework:** React 19.2 + React DOM 19.2
 *   **Routing:** TanStack Router (File-based, type-safe routing)
 *   **Build Tool:** Vite 7 (Fast Refresh enabled)
-*   **Language:** TypeScript 5.9 (Strict mode, `noExplicitAny`, `react-jsx` transform)
+*   **Language:** TypeScript 5.9 (Strict mode, `noExplicitAny`, `erasableSyntaxOnly`, `react-jsx` transform)
 *   **Styling:** Tailwind CSS 4 (Zero-configuration via `@tailwindcss/vite`)
 *   **Utilities:**
     *   `clsx` + `tailwind-merge` (combined as `cn` helper)
@@ -21,15 +21,19 @@ This is a **minimal starter template** for building modern web applications. It 
 ## Directory Structure
 
 ```text
-/Users/cipher/Desktop/cn-button/
+/Users/cipher/Documents/projects/vite-react-tanstack/
 ├── .github/
 │   └── copilot-instructions.md   # Detailed AI coding instructions
 ├── src/
+│   ├── assets/
+│   │   └── images/               # Image assets (for Image Utilities)
 │   ├── components/               # Reusable UI components
 │   │   ├── ButtonCn.tsx          # Simple button using 'cn'
 │   │   ├── ButtonCva.tsx         # Variant-based button using 'cva'
 │   │   └── CardTv.tsx            # Slot-based card using 'tailwind-variants'
 │   ├── lib/
+│   │   ├── image.ts              # Eager image loading utilities
+│   │   ├── imageAsync.ts         # Lazy image loading utilities
 │   │   └── utils.ts              # Utilities (contains 'cn' function)
 │   ├── routes/                   # TanStack Router routes
 │   │   ├── __root.tsx            # Root layout
@@ -88,10 +92,19 @@ This is a **minimal starter template** for building modern web applications. It 
 
 ### TypeScript
 *   **Strict Mode:** Enabled. `noExplicitAny` and `noUnusedVariables` are enforced errors.
+*   **Type Checking:** `erasableSyntaxOnly: true` (limited to type-only syntax).
 *   **Path Alias:** Use `@/` to import from `src/` (e.g., `import { cn } from '@/lib/utils'`).
 
 ### Tailwind CSS v4 (CRITICAL)
 *   **Configuration:** **NO** `tailwind.config.js`. Config is handled in `src/index.css` via `@import "tailwindcss";` and `@theme` blocks.
+*   **Theme Management:** Define project tokens in `src/index.css`:
+    ```css
+    @import "tailwindcss";
+    @theme {
+      --color-primary: #294779;
+      --color-secondary: #f59e0b;
+    }
+    ```
 *   **Class Names (v4):**
     *   ❌ `space-x-*` / `space-y-*` -> ✅ Use `gap-*` with flex/grid.
     *   ❌ `divide-*` -> ✅ Use borders on children.
@@ -108,18 +121,90 @@ Always use the `cn` function (from `@/lib/utils`) to merge classes and handle co
 <div className={cn('base-class', isActive && 'active-class', className)} />
 ```
 
-#### Component Implementation Patterns
-1.  **Simple (`ButtonCn.tsx`):** Use `cn` for simple boolean states (`active`, `disabled`).
-2.  **Variants (`ButtonCva.tsx`):** Use `class-variance-authority` (CVA) for multiple variants (`size`, `intent`) on a single element.
-3.  **Slot-Based (`CardTv.tsx`):** Use `tailwind-variants` for multi-element components (e.g., cards, forms) requiring coordinated styling across slots (`base`, `title`, `content`).
+#### 1. Simple Conditional (`ButtonCn.tsx`)
+Use for simple components with few variations or single DOM elements.
+```tsx
+import { cn } from '@/lib/utils'
+import type { ComponentProps } from 'react'
 
-### Accessibility (a11y)
-*   **Navigation:** Use `<nav>` with `aria-label`.
+type ButtonProps = ComponentProps<'button'> & { active?: boolean }
+
+export const Button = ({ className, active, disabled, ...props }: ButtonProps) => (
+  <button
+    className={cn('base-classes', active && 'active-classes', disabled && 'disabled-classes', className)}
+    {...props}
+  />
+)
+```
+
+#### 2. Variant API (`ButtonCva.tsx`)
+Use `class-variance-authority` (CVA) for single-element components with multiple variants.
+```tsx
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+
+const buttonVariants = cva('base-classes', {
+  variants: {
+    intent: { primary: 'primary-classes', secondary: 'secondary-classes' },
+    size: { sm: 'small-classes', md: 'medium-classes' }
+  },
+  defaultVariants: { intent: 'primary', size: 'md' }
+})
+
+type ButtonProps = ComponentProps<'button'> & VariantProps<typeof buttonVariants>
+
+export const ButtonCva = ({ intent, size, className, ...props }: ButtonProps) => (
+  <button className={cn(buttonVariants({ intent, size }), className)} {...props} />
+)
+```
+
+#### 3. Slot-Based (`CardTv.tsx`)
+Use `tailwind-variants` for multi-element components. Built-in `twMerge` (no `cn` needed).
+```tsx
+import { tv, type VariantProps } from 'tailwind-variants'
+
+const card = tv({
+  slots: { base: '...', title: '...', content: '...' },
+  variants: { tone: { default: { base: 'bg-white' }, dark: { base: 'bg-slate-900' } } }
+})
+
+export const Card = ({ tone, className, ...props }) => {
+  const { base, title, content } = card({ tone })
+  return (
+    <div className={base({ class: className })}>
+      <h3 className={title()}>Title</h3>
+      <div className={content()} />
+    </div>
+  )
+}
+```
+
+## Asset Management
+
+### Image Utilities
+Images stored in `src/assets/images/` can be loaded using helper functions.
+
+*   **Eager Loading (`@/lib/image`):** Use `getImage('name.jpg')` for static assets. Returns the URL or empty string.
+*   **Lazy Loading (`@/lib/imageAsync`):** Use `getImageAsync('name.jpg')` for large images. Returns a Promise.
+*   **Bulk Access:** `getAllImages()` and `getAllImagesAsync()` return a map of all images.
+
+## Accessibility (a11y)
+*   **Navigation:** Use `<nav>` with `aria-label`. Use TanStack `Link` for internal routing.
 *   **Interactive:** Use `aria-expanded`, `aria-controls` for menus/toggles.
 *   **Images:** Always provide `alt` text.
 *   **Contrast:** Ensure WCAG AA compliance.
 
-### Formatting (Biome)
+## MCP Tools Integration
+
+If Tailwind CSS MCP tools are available, use them to:
+1.  **Verify v4 Utilities:** `mcp_tailwindcss_m_get_tailwind_utilities`
+2.  **Search Docs:** `mcp_tailwindcss_m_search_tailwind_docs`
+3.  **Convert CSS:** `mcp_tailwindcss_m_convert_css_to_tailwind`
+4.  **Generate Components:** `mcp_tailwindcss_m_generate_component_template`
+
+Always prioritize **Tailwind CSS v4** syntax and conventions.
+
+## Formatting (Biome)
 *   **Indentation:** 2 spaces.
 *   **Quotes:** Single quotes (JSX attributes use double quotes).
 *   **Semicolons:** As needed.
