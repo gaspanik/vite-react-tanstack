@@ -135,6 +135,51 @@ Tailwind CSS v4 has updated class naming conventions. **Always use v4 syntax**:
 
 **Never generate or suggest v3-specific utilities.** When refactoring, convert deprecated utilities to modern flex/grid patterns.
 
+### MCP Tools for Documentation Reference
+
+When Claude Code has access to the Tailwind CSS MCP server, **prefer using MCP tools to reference up-to-date documentation** instead of relying solely on training data.
+
+**Available MCP Tools:**
+
+- `mcp__TailwindCSS__search_tailwind_docs` - Search official Tailwind documentation
+  - Use when: Looking for specific utilities, patterns, or configuration options
+  - Example: Searching for "flexbox utilities", "responsive design", "dark mode"
+
+- `mcp__TailwindCSS__get_tailwind_utilities` - Get utilities by category/property
+  - Use when: Need to verify available utility classes for a specific CSS property
+  - Example: Getting all margin utilities, color classes, or typography options
+
+- `mcp__TailwindCSS__get_tailwind_colors` - Get color palette information
+  - Use when: Need to verify available color shades or create consistent color schemes
+  - Example: Getting all shades of `blue`, `gray`, or custom color definitions
+
+- `mcp__TailwindCSS__convert_css_to_tailwind` - Convert traditional CSS to Tailwind classes
+  - Use when: Need to translate existing CSS styles to Tailwind v4 syntax
+  - Example: Converting legacy CSS rules to modern utility classes
+
+- `mcp__TailwindCSS__generate_color_palette` - Generate custom color palettes
+  - Use when: Creating custom theme colors with proper shade variations
+  - Example: Generating brand color palettes from hex values
+
+- `mcp__TailwindCSS__generate_component_template` - Generate component templates
+  - Use when: Scaffolding new UI components with Tailwind patterns
+  - Example: Creating buttons, cards, forms with modern Tailwind v4 classes
+
+**When to Use MCP Tools:**
+
+1. **Before Writing Code**: Search documentation to verify correct v4 syntax
+2. **When Uncertain**: Check utilities when syntax is unclear or deprecated
+3. **For Complex Patterns**: Look up responsive design, state variants, or advanced configurations
+4. **Color Systems**: Verify color names and shades before using arbitrary values
+5. **Component Scaffolding**: Generate starting templates for common UI patterns
+
+**Best Practices:**
+
+- Always verify class names with MCP tools when working with Tailwind v4 features
+- Use `search_tailwind_docs` as the primary reference for best practices
+- Prefer MCP-generated code over assumptions to ensure v4 compatibility
+- Check `get_tailwind_utilities` when converting v3 syntax to v4
+
 ## Component Patterns
 
 ### cn Function
