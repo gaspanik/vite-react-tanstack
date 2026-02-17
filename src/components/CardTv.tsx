@@ -50,22 +50,10 @@ interface CardProps extends CardVariants {
 }
 
 // コンポーネント実装
-export const Card = ({
-  tone,
-  title,
-  imageUrl,
-  children,
-  className,
-}: CardProps) => {
+export const Card = ({ tone, title, imageUrl, children, className }: CardProps) => {
   // スロット関数の生成
   // tone を渡すと、そのモードのクラスが生成される
-  const {
-    base,
-    image,
-    content,
-    title: titleClass,
-    description,
-  } = card({ tone })
+  const { base, image, content, title: titleClass, description } = card({ tone })
 
   return (
     // tailwind-variants は twMerge 的な処理を自動でおこなう

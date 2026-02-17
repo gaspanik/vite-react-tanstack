@@ -11,13 +11,9 @@ function ButtonCn() {
     <div className="flex flex-col justify-center items-center bg-white min-h-[90vh]">
       <div className="flex flex-col items-start gap-1">
         <div className="flex items-center gap-2">
-          <h1 className="font-medium text-gray-900 text-xl">
-            cn: clsx and tailwind-merge function button.
-          </h1>
+          <h1 className="font-medium text-gray-900 text-xl">cn: clsx and tailwind-merge function button.</h1>
         </div>
-        <p className="mb-3 text-gray-600 text-sm">
-          shadcn/ui `cn` utility function to conditionally join classNames.
-        </p>
+        <p className="mb-3 text-gray-600 text-sm">shadcn/ui `cn` utility function to conditionally join classNames.</p>
         <div className="my-1">
           <Button className="" active>
             <CheckSquare2 className="mr-1 w-4 h-4" />

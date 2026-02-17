@@ -15,8 +15,7 @@ const buttonVariants = cva(
     // 2. 変化する部分（バリアント）の定義
     variants: {
       intent: {
-        primary:
-          'bg-neutral-800 text-white border-neutral-900 hover:bg-neutral-700',
+        primary: 'bg-neutral-800 text-white border-neutral-900 hover:bg-neutral-700',
         secondary: 'bg-white text-gray-500 border-gray-200',
       },
       size: {
@@ -33,16 +32,9 @@ const buttonVariants = cva(
 )
 
 // VariantProps を使って、cvaの設定から型（'primary' | 'secondary' 等）を自動抽出
-type ButtonProps = ComponentProps<'button'> &
-  VariantProps<typeof buttonVariants>
+type ButtonProps = ComponentProps<'button'> & VariantProps<typeof buttonVariants>
 
-export const Button = ({
-  className,
-  intent,
-  size,
-  children,
-  ...props
-}: ButtonProps) => {
+export const Button = ({ className, intent, size, children, ...props }: ButtonProps) => {
   return (
     <button
       // cva関数を実行すると、条件に合ったクラス文字列が返ってくる

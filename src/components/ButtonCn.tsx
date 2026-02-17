@@ -11,13 +11,7 @@ type ButtonProps = ComponentProps<'button'> & {
   active?: boolean
 }
 
-export const Button = ({
-  className,
-  active,
-  disabled,
-  children,
-  ...props
-}: ButtonProps) => {
+export const Button = ({ className, active, disabled, children, ...props }: ButtonProps) => {
   return (
     <button
       type="button"
