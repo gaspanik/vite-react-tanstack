@@ -20,7 +20,7 @@ const buttonVariants = cva(
       },
       size: {
         sm: 'text-sm',
-        md: 'text-md',
+        md: 'text-base',
       },
     },
     // 3. デフォルト値

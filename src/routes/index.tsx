@@ -14,7 +14,7 @@ function Index() {
           <h1 className="font-medium text-gray-900 text-xl">React w/ Tanstack Router and Tailwind CSS v4</h1>
         </div>
         <p className="mt-2 mb-4 text-gray-600 text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-        <p className="text-gray-00 text-sm">
+        <p className="text-gray-0 text-sm">
           <span className="font-bold">Explore sample buttons:</span>{' '}
           <Link to="/button-cn" className="text-blue-600 hover:underline">
             button-cn
@@ -24,13 +24,13 @@ function Index() {
             button-cva
           </Link>
         </p>
-        <p className="text-gray-00 text-sm">
+        <p className="text-gray-0 text-sm">
           <span className="font-bold">Explore card components w/ tv:</span>{' '}
           <Link to="/card-tv" className="text-blue-600 hover:underline">
             card-tv
           </Link>
         </p>
-        <p className="text-gray-00 text-sm">
+        <p className="text-gray-0 text-sm">
           <span className="font-bold">Experiment with custom components:</span>{' '}
           <Link to="/playground" className="text-blue-600 hover:underline">
             playground
