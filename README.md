@@ -9,7 +9,7 @@ React 19 + TypeScript + Vite 7 + TanStack Router + Tailwind CSS 4 の最小構�
 - **Vite 7** + `@vitejs/plugin-react`（Fast Refresh 有効）
 - **TanStack Router**（型安全なファイルベースルーティング）
 - **Tailwind CSS 4**（`@tailwindcss/vite` 経由、設定ファイル不要）
-- **Biome 2.3**（厳格ルールでのフォーマッター + Linter）
+- **Biome 2.4.3**（厳格ルールでのフォーマッター + Linter）
 - **lucide-react**（アイコンライブラリ）
 - **clsx** + **tailwind-merge**（クラス名結合・競合解決ユーティリティ）
 - **class-variance-authority**（バリアント API 実装ライブラリ）
@@ -25,19 +25,23 @@ React 19 + TypeScript + Vite 7 + TanStack Router + Tailwind CSS 4 の最小構�
 │   ├── main.tsx                  # エントリポイント
 │   ├── routeTree.gen.ts          # TanStack Router 自動生成ファイル
 │   ├── index.css                 # グローバルスタイル（Tailwind インポート）
+│   ├── assets/
+│   │   └── images/               # 画像アセット格納ディレクトリ
 │   ├── components/               # 再利用可能な UI コンポーネント
 │   │   ├── ButtonCn.tsx         # cn 関数を使った基本的なボタン
 │   │   ├── ButtonCva.tsx        # CVA を使ったバリアント対応ボタン
 │   │   └── CardTv.tsx           # tailwind-variants を使ったカード
 │   ├── lib/
-│   │   └── utils.ts              # cn 関数（clsx + tailwind-merge）
+│   │   ├── utils.ts              # cn 関数（clsx + tailwind-merge）
+│   │   ├── image.ts              # 画像イーガーロード（同期）
+│   │   └── imageAsync.ts         # 画像レイジーロード（非同期）
 │   └── routes/                   # TanStack Router ルート定義
 │       ├── __root.tsx            # ルートレイアウト
 │       ├── index.tsx             # ホームページ
 │       ├── button-cn.tsx         # ButtonCn サンプルページ
 │       ├── button-cva.tsx        # ButtonCva サンプルページ
-│       └── card-tv.tsx           # CardTv サンプルページ
-├── public/                       # 静的アセット
+│       ├── card-tv.tsx           # CardTv サンプルページ
+│       └── playground.tsx        # プレイグラウンドページ
 ├── index.html                    # HTML エントリ
 ├── vite.config.ts                # Vite 設定（パスエイリアス: @ → src/）
 ├── tsconfig.json                 # TypeScript プロジェクト参照
@@ -45,6 +49,8 @@ React 19 + TypeScript + Vite 7 + TanStack Router + Tailwind CSS 4 の最小構�
 ├── tsconfig.node.json            # Node 用 TypeScript 設定
 ├── biome.json                    # Biome 設定
 ├── mise.toml                     # Mise タスク定義
+├── CLAUDE.md                     # Claude Code 用の指示
+├── GEMINI.md                     # Gemini 用の指示
 ├── pnpm-workspace.yaml           # pnpm ワークスペース設定
 └── package.json                  # 依存関係とスクリプト
 ```
@@ -107,6 +113,9 @@ export const Route = createFileRoute('/')({ component: Index })
 
 // src/routes/button-cn.tsx - /button-cn ルート
 export const Route = createFileRoute('/button-cn')({ component: ButtonCn })
+
+// src/routes/playground.tsx - /playground ルート
+export const Route = createFileRoute('/playground')({ component: PlayGround })
 ```
 
 ### Tailwind CSS v4
