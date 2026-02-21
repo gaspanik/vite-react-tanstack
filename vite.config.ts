@@ -22,4 +22,10 @@ export default defineConfig({
   },
   // base path for deploying to a subdirectory
   // base: './',
+  //
+  // server configuration for using portless (github.com/vercel-labs/portless)
+  // server: {
+  //   host: '0.0.0.0',
+  //   port: Number(process.env.PORT) || 5173,
+  // },
 })
