@@ -12,9 +12,9 @@
     "check": "biome check --write"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.2.0",
-    "@tanstack/react-router": "^1.161.4",
-    "@tanstack/react-router-devtools": "^1.161.4",
+    "@tailwindcss/vite": "^4.2.1",
+    "@tanstack/react-router": "^1.163.2",
+    "@tanstack/react-router-devtools": "^1.163.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.575.0",
@@ -22,12 +22,12 @@
     "react-dom": "^19.2.4",
     "tailwind-merge": "^3.5.0",
     "tailwind-variants": "^3.2.2",
-    "tailwindcss": "^4.2.0"
+    "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.4",
-    "@tanstack/router-plugin": "^1.161.4",
-    "@types/node": "^25.3.0",
+    "@tanstack/router-plugin": "^1.163.2",
+    "@types/node": "^25.3.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
@@ -35,5 +35,5 @@
     "typescript": "~5.9.3",
     "vite": "^7.3.1"
   },
-  "packageManager": "pnpm@10.30.1"
+  "packageManager": "pnpm@10.30.3"
 }
