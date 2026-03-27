@@ -1,15 +1,15 @@
 # Vite Starter for React + TypeScript + TanStack Router + Tailwind CSS
 
-React 19 + TypeScript + Vite 7 + TanStack Router + Tailwind CSS 4 の最小構成スターターテンプレート。
+React 19 + TypeScript + Vite 8 + TanStack Router + Tailwind CSS 4 の最小構成スターターテンプレート。
 
 ## 技術スタック
 
 - **React 19.2** / **React DOM 19.2**
-- **TypeScript 5.9**（strict モード、`react-jsx` transform）
-- **Vite 7** + `@vitejs/plugin-react`（Fast Refresh 有効）
+- **TypeScript 6**（strict モード、`react-jsx` transform）
+- **Vite 8** + `@vitejs/plugin-react`（Fast Refresh 有効）
 - **TanStack Router**（型安全なファイルベースルーティング）
 - **Tailwind CSS 4**（`@tailwindcss/vite` 経由、設定ファイル不要）
-- **Biome 2.4.3**（厳格ルールでのフォーマッター + Linter）
+- **Biome 2.4.9**（厳格ルールでのフォーマッター + Linter）
 - **lucide-react**（アイコンライブラリ）
 - **clsx** + **tailwind-merge**（クラス名結合・競合解決ユーティリティ）
 - **class-variance-authority**（バリアント API 実装ライブラリ）

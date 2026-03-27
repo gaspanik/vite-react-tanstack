@@ -2,15 +2,15 @@
 
 ## Project Overview
 
-Minimal React 19 + TypeScript + Vite 7 + Tailwind CSS 4 starter with pnpm workspace support.
+Minimal React 19 + TypeScript + Vite 8 + Tailwind CSS 4 starter with pnpm workspace support.
 
 ## Tech Stack
 
 - **Framework**: React 19.2 (`react-jsx` transform)
-- **Build**: Vite 7 + `@vitejs/plugin-react` (Fast Refresh enabled)
+- **Build**: Vite 8 + `@vitejs/plugin-react` (Fast Refresh enabled)
 - **Styling**: Tailwind CSS 4 (via `@tailwindcss/vite`, applied with `@import "tailwindcss"`)
 - **Utilities**: `clsx` + `tailwind-merge` (combined as `cn` function), `class-variance-authority` (for variant APIs), `tailwind-variants` (for slot-based multi-element styling)
-- **Linter/Formatter**: Biome 2.3 (strict configuration in [.biome.json](.biome.json))
+- **Linter/Formatter**: Biome 2.4 (strict configuration in [.biome.json](.biome.json))
 - **Package Manager**: pnpm (`pnpm-workspace.yaml` with `@tailwindcss/oxide`, `esbuild` as build dependencies only)
 
 ## Key Structure
